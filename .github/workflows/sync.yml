@@ -1,0 +1,28 @@
+name: sync with main repo
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */6 * * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+       - name: Checkout
+         uses: actions/checkout@main
+
+ #############################################################################################      
+       - name: Initialization
+         run: |
+           git config --global user.name ${{ secrets.GH_USR }}
+           git config --global user.email ${{ secrets.GH_MAIL }}
+           git config --global credential.helper store
+           git config --global pull.rebase false
+           echo "https://${{ secrets.GH_USR }}:${{ secrets.GH_TOKEN }}@github.com" > ~/.git-credentials
+#############################################################################################
+       - name: sync and push
+         run: |
+           git pull --allow-unrelated-histories https://github.com/anasty17/mirror-leech-telegram-bot
+           git push --mirror --force https://amirulandalib:${{ secrets.GH_TOKEN }}@github.com/moid8838/mltbflow
